@@ -1,50 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.Extensions.Logging;
+using ShopApp.DataAcces;
 
-namespace ShopApp.DataAcces
+namespace ShopApp
 {
-    public class ShopDbContext : DbContext
+    public static class MauiProgram
     {
-        public DbSet<Category> Categories { get; set; }
-        public DbSet<Product> Products { get; set; }
-        public DbSet<Client> Clients { get; set; }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    public static MauiApp CreateMauiApp()
         {
-            optionsBuilder.UseInMemoryDatabase("ShopComputer");
-        }
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<Category>().HasData(
-                new Category(1, "Electronicos"),
-                new Category(2, "Computadoras"),
-                new Category(3, "Telefonos Moviles"),
-                new Category(4, "Dispositivos de Escritorio"),
-                new Category(5, "Microfonos y Audio"),
-                new Category(6, "Artefactos del Hogar"),
-                new Category(7, "Juguetes y Juegos")
-            );
-            modelBuilder.Entity<Product>().HasData(
-                new Product(1, "Radio Digital", "Es una radio de banda ancha", 100, 1, "radio_digital.jpg"),
-                new Product(2, "Reloj electrónico", "Reloj digital sumergible", 50, 1, "reloj_electronico.jpg"),
-                new Product(3, "Laptop HP", "Laptop Escritprio", 900, 2, "laptop_hp.jpg"),
-                new Product(4, "Laptop Acer", "Laptop Gamer", 1200, 2, "laptop_acer.jpg"),
-                new Product(5, "Macbook Apple", "Gran Capacidad", 1500, 2, "macbook_apple.jpg"),
-                new Product(6, "Samsung Galaxy", "Smartphone 5G", 1800, 3, "samsung_galaxy.jpg"),
-                new Product(7, "Iphone 14", "Apple disp", 1500, 3)
-            );
-            modelBuilder.Entity<Client>().HasData(
-                new Client(1, "Jose Martinez", "Carrera 1 54 12"),
-                new Client(2, "Ronaldo Nazario", "Calle 44 12 32")
-            );
-        }
-    }
+            var builder = MauiApp.CreateBuilder();
+            builder
+                .UseMauiApp<App>()
+                .ConfigureFonts(fonts =>
+                {
+                    fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
+                    fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
+                });
+            var dbContext = new ShopDbContext();
+            dbContext.Database.EnsureCreated();
+            dbContext.Dispose();
+            Routing.RegisterRoute(nameof(ProductDetailPage), typeof(ProductDetailPage));
 
-    public record Category(int Id, string Nombre);
-    public record Product(int Id, string Nombre, string Descripcion, decimal Precio, int CategoryId, string Imagen = null)
-    {
-        public Category Category { get; set; }
+#if DEBUG
+            builder.Logging.AddDebug();
+#endif
+            return builder.Build();
+        }
     }
 }

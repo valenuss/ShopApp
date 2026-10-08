@@ -1,4 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using Microsoft.EntityFrameworkCore;
 
 namespace ShopApp.DataAcces
 {
@@ -12,7 +15,6 @@ namespace ShopApp.DataAcces
         {
             optionsBuilder.UseInMemoryDatabase("ShopComputer");
         }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Category>().HasData(
@@ -24,17 +26,15 @@ namespace ShopApp.DataAcces
                 new Category(6, "Artefactos del Hogar"),
                 new Category(7, "Juguetes y Juegos")
             );
-
             modelBuilder.Entity<Product>().HasData(
-                new Product(1, "Radio Digital", "Es una radio de banda ancha", 100, 1),
-                new Product(2, "Reloj electrónico", "Reloj digital sumergible", 50, 1),
-                new Product(3, "Laptop HP", "Laptop Escritprio", 900, 2),
-                new Product(4, "Laptop Acer", "Laptop Gamer", 1200, 2),
-                new Product(5, "Macbook Apple", "Gran Capacidad", 1500, 2),
-                new Product(6, "Samsung Galaxy", "Smartphone 5G", 1800, 3),
+                new Product(1, "Radio Digital", "Es una radio de banda ancha", 100, 1, "radio_digital.jpg"),
+                new Product(2, "Reloj electrónico", "Reloj digital sumergible", 50, 1, "reloj_electronico.jpg"),
+                new Product(3, "Laptop HP", "Laptop Escritprio", 900, 2, "laptop_hp.jpg"),
+                new Product(4, "Laptop Acer", "Laptop Gamer", 1200, 2, "laptop_acer.jpg"),
+                new Product(5, "Macbook Apple", "Gran Capacidad", 1500, 2, "macbook_apple.jpg"),
+                new Product(6, "Samsung Galaxy", "Smartphone 5G", 1800, 3, "samsung_galaxy.jpg"),
                 new Product(7, "Iphone 14", "Apple disp", 1500, 3)
             );
-
             modelBuilder.Entity<Client>().HasData(
                 new Client(1, "Jose Martinez", "Carrera 1 54 12"),
                 new Client(2, "Ronaldo Nazario", "Calle 44 12 32")
@@ -43,11 +43,9 @@ namespace ShopApp.DataAcces
     }
 
     public record Category(int Id, string Nombre);
-
-    public record Product(int Id, string Nombre, string Descripcion, decimal Precio, int CategoryId)
+    public record Product(int Id, string Nombre, string Descripcion, decimal Precio, int CategoryId, string Imagen = null)
     {
         public Category Category { get; set; }
     }
-
     public record Client(int Id, string Nombre, string Direccion);
 }
