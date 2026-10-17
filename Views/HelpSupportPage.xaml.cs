@@ -26,8 +26,3 @@ public partial class HelpSupportPage : INotifyPropertyChanged
     }
 }
 
-public class HelpSupportData
-{ 
-	public int VisitCount { get; set; }
-
-}
