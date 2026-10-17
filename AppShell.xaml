@@ -37,9 +37,13 @@
                 Route="AboutPage" />
         </Tab>
     </FlyoutItem>
+            <ShellContent
+                Title="Help Support"
+                ContentTemplate="{DataTemplate views:HelpSupportPage}"
+                Route="HelpSupportPage" />
 
     <MenuItem
-        Text="Abrir repo"
+        Text="Open Repository"
         Clicked="MenuItem_Clicked"
         />
 </Shell>
