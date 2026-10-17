@@ -7,7 +7,7 @@ using System.Text;
 namespace ShopApp
 {
 
-    public class BndingUtilObject : INotifyPropertyChanged
+    public class BindingUtilObject : INotifyPropertyChanged
     {
         public void ReisePropertyChanged([CallerMemberName] string propertyName = null)
         {

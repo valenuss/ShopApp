@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using ShopApp.DataAcces;
 
 namespace ShopApp.Views;
@@ -20,5 +21,10 @@ public partial class ProductsPage : ContentPage
             };
             container.Children.Add(boton);
         }
+    }
+
+    public static implicit operator ProductsPage(ObservableCollection<Product> v)
+    {
+        throw new NotImplementedException();
     }
 }

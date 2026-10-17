@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
 
@@ -46,6 +47,11 @@ namespace ShopApp.DataAcces
     public record Product(int Id, string Nombre, string Descripcion, decimal Precio, int CategoryId, string Imagen = null)
     {
         public Category Category { get; set; }
+
+        public static implicit operator Product(ObservableCollection<Product> v)
+        {
+            throw new NotImplementedException();
+        }
     }
     public record Client(int Id, string Nombre, string Direccion);
 }
