@@ -40,10 +40,6 @@
             <ShellContent
                 Title="Help Support"
                 ContentTemplate="{DataTemplate views:HelpSupportPage}"
-                Route="HelpSupportPage" />
+        Route="HelpSupportPage"/>
 
-    <MenuItem
-        Text="Open Repository"
-        Clicked="MenuItem_Clicked"
-        />
 </Shell>
