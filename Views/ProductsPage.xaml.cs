@@ -14,10 +14,18 @@ public partial class ProductsPage : ContentPage
         {
             var boton = new Button
             {
+                Text = product.Nombre
+            };
+
+            var productId = product.Id;
+
+            boton.Clicked += async (sender, e) =>
             {
                 var uri = $"{nameof(ProductDetailPage)}?id={productId}";
+
                 await Shell.Current.GoToAsync(uri);
             };
+
             container.Children.Add(boton);
         }
     }

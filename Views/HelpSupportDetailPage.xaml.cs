@@ -3,11 +3,16 @@ using ShopApp.DataAcces;
 
 namespace ShopApp.Views;
 
-public partial class HelpSupportDetailPage : ContentPage
+public partial class HelpSupportDetailPage : ContentPage, IQueryAttributable
 {
     public HelpSupportDetailPage()
     {
         InitializeComponent();
+    }
+
+    public void ApplyQueryAttributes(IDictionary<string, object> query)
+    {
+        Title = $"Cliente: {query["id"]}";
     }
 }
 
@@ -22,41 +27,41 @@ public class HelpSupportDetailData : BindingUtilObject
     private ObservableCollection<Product> _products;
     public ObservableCollection<Product> Products
     {
-        get => _products;
+        get { return _products; }
         set
         {
             if (_products != value)
             {
                 _products = value;
-                ReisePropertyChanged();
+                RaisePropertyChanged();
             }
         }
     }
 
-    private Product _selectedProduct;
-    public Product SelectedProduct
+    private Product _productoSeleccionado;
+    public Product ProductoSeleccionado
     {
-        get => _selectedProduct;
+        get { return _productoSeleccionado; }
         set
         {
-            if (_selectedProduct != value)
+            if (_productoSeleccionado != value)
             {
-                _selectedProduct = value;
-                ReisePropertyChanged();
+                _productoSeleccionado = value;
+                RaisePropertyChanged();
             }
         }
     }
 
-    private int _amount;
-    public int Amount
+    private int _cantidad = 1;
+    public int Cantidad
     {
-        get => _amount;
+        get { return _cantidad; }
         set
         {
-            if (_amount != value)
+            if (_cantidad != value)
             {
-                _amount = value;
-                ReisePropertyChanged();
+                _cantidad = value;
+                RaisePropertyChanged();
             }
         }
     }
