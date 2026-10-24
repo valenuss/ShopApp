@@ -1,4 +1,3 @@
-using System.Collections.ObjectModel;
 using ShopApp.DataAcces;
 
 namespace ShopApp.Views;
@@ -9,22 +8,17 @@ public partial class ProductsPage : ContentPage
     {
         InitializeComponent();
 
-        var dbContext = new ShopDbContext();
+        using var dbContext = new ShopDbContext();
 
         foreach (var product in dbContext.Products)
         {
-            var boton = new Button { Text = product.Nombre };
-            boton.Clicked += async (s, e) =>
+            var boton = new Button
             {
-                var uri = $"{nameof(ProductDetailPage)}?id={product.Id}";
+            {
+                var uri = $"{nameof(ProductDetailPage)}?id={productId}";
                 await Shell.Current.GoToAsync(uri);
             };
             container.Children.Add(boton);
         }
-    }
-
-    public static implicit operator ProductsPage(ObservableCollection<Product> v)
-    {
-        throw new NotImplementedException();
     }
 }
