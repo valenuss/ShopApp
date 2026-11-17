@@ -22,8 +22,7 @@ public partial class HelpSupportDetailViewModel
 
     [ObservableProperty]
     private int cantidad = 1;
-
-
+    internal object ClienteId;
     private readonly ShopOutDbContext _outDbContext;
 
     public HelpSupportDetailViewModel(
