@@ -4,7 +4,9 @@ using System.Text;
 
 namespace ShopApp.Services
 {
-    internal class INavegacionService
+    public interface INavegacionService
     {
+        Task GoToAsync(string uri);
+        Task GoToAsync(string uri, IDictionary<string, object> parameters);
     }
 }

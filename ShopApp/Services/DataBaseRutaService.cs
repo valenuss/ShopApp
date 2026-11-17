@@ -1,10 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using System.IO;
 
-namespace ShopApp.Services
+namespace ShopApp.Services;
+
+public class DatabaseRutaService : IDatabaseRutaService
 {
-    internal class DataBaseRutaService
+    public string get(string nombreArchivo)
     {
+        var rutaDirectorio = Environment.GetFolderPath(
+            Environment.SpecialFolder.LocalApplicationData);
+
+        return Path.Combine(rutaDirectorio, nombreArchivo);
     }
 }

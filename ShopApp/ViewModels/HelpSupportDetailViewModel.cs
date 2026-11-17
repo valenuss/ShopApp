@@ -1,4 +1,6 @@
-﻿using ShopApp.DataAcces;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using ShopApp.DataAcces;
+using ShopApp.Services;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 
@@ -22,32 +24,40 @@ public partial class HelpSupportDetailViewModel
 
     [ObservableProperty]
     private int cantidad = 1;
-    internal object ClienteId;
+
     private readonly ShopOutDbContext _outDbContext;
 
+    private readonly IConnectivity _connectivity;
+
+    private readonly CompraService _compraService;
+
     public HelpSupportDetailViewModel(
-        ShopOutDbContext outDbContext)
+        ShopOutDbContext outDbContext,
+        IConnectivity connectivity,
+        CompraService compraService)
     {
         _outDbContext = outDbContext;
+        _connectivity = connectivity;
+        _compraService = compraService;
 
         using var database = new ShopDbContext();
 
-        products = new ObservableCollection<Product>(
+        Products = new ObservableCollection<Product>(
             database.Products.ToList()
         );
 
         AddCommand = new MiComando(() =>
         {
-            if (productoSeleccionado == null)
+            if (ProductoSeleccionado == null)
                 return;
 
             var compra = new Compra(
-                clienteId,
-                productoSeleccionado.Id,
-                cantidad
+                ClienteId,
+                ProductoSeleccionado.Id,
+                Cantidad
             );
 
-            compras.Add(compra);
+            Compras.Add(compra);
         },
         () => true);
 
@@ -55,28 +65,50 @@ public partial class HelpSupportDetailViewModel
         {
             await EnviarCompra();
         },
-        () => true);
+        () => StatusConnection());
+
+        _connectivity.ConnectivityChanged +=
+            Connectivity_ConnectivityChanged;
     }
 
     public ICommand AddCommand { get; }
 
     public ICommand EnviarCompraCommand { get; }
 
+    private void Connectivity_ConnectivityChanged(
+        object? sender,
+        ConnectivityChangedEventArgs e)
+    {
+        MainThread.BeginInvokeOnMainThread(() =>
+        {
+            ((MiComando)EnviarCompraCommand)
+                .RaiseCanExecuteChanged();
+        });
+    }
+
+    private bool StatusConnection()
+    {
+        return _connectivity.NetworkAccess
+            == NetworkAccess.Internet ? true : false;
+    }
+
     private async Task EnviarCompra()
     {
-        if (compras.Count == 0)
+        if (Compras.Count == 0)
         {
             await Shell.Current.DisplayAlert(
                 "Aviso",
-                "No hay productos para guardar.",
+                "No hay productos para enviar.",
                 "OK");
 
             return;
         }
 
-        foreach (var item in compras)
+        var comprasParaEnviar = new List<CompraItem>();
+
+        foreach (var item in Compras)
         {
-            var producto = products.FirstOrDefault(
+            var producto = Products.FirstOrDefault(
                 p => p.Id == item.ProductId);
 
             if (producto == null)
@@ -89,28 +121,60 @@ public partial class HelpSupportDetailViewModel
                 producto.Precio
             );
 
-            if (_outDbContext.Compras is not ICollection<CompraItem> comprasDb)
-                throw new InvalidOperationException("La colección de compras no es una colección de CompraItem.");
-
-            comprasDb.Add(compraItem);
+            comprasParaEnviar.Add(compraItem);
         }
 
-        await _outDbContext.SaveChangesAsync();
+        if (comprasParaEnviar.Count != Compras.Count)
+        {
+            await Shell.Current.DisplayAlert(
+                "Error",
+                "No se encontraron todos los productos de la compra.",
+                "OK");
 
-        await Shell.Current.DisplayAlert(
-            "Éxito",
-            "Compra guardada localmente en SQLite.",
-            "OK");
+            return;
+        }
+
+        try
+        {
+            var resultado = await _compraService
+                .EnviarData(comprasParaEnviar);
+
+            if (resultado)
+            {
+
+                _outDbContext.Compras.AddRange(
+                    comprasParaEnviar);
+
+                await _outDbContext.SaveChangesAsync();
+
+                await Shell.Current.DisplayAlert(
+                    "Éxito",
+                    "Compra enviada correctamente al servidor backend y guardada en SQLite.",
+                    "OK");
+            }
+            else
+            {
+                await Shell.Current.DisplayAlert(
+                    "Error",
+                    "El servidor rechazó la compra o devolvió un error.",
+                    "OK");
+            }
+        }
+        catch (Exception ex)
+        {
+            await Shell.Current.DisplayAlert(
+                "Error",
+                $"Ocurrió una excepción al procesar la compra: {ex.Message}",
+                "OK");
+        }
     }
-
-
     public void ApplyQueryAttributes(
         IDictionary<string, object> query)
     {
         if (query.TryGetValue("id", out var valorId)
             && int.TryParse(valorId?.ToString(), out int id))
         {
-            clienteId = id;
+            ClienteId = id;
         }
     }
 }

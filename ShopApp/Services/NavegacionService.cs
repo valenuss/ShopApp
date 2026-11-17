@@ -4,7 +4,16 @@ using System.Text;
 
 namespace ShopApp.Services
 {
-    internal class NavegacionService
+    public class NavegacionService : INavegacionService
     {
+        public Task GoToAsync(string uri)
+        {
+            return Shell.Current.GoToAsync(uri);
+        }
+
+        public Task GoToAsync(string uri, IDictionary<string, object> parameters)
+        {
+            return Shell.Current.GoToAsync(uri, parameters);
+        }
     }
 }
