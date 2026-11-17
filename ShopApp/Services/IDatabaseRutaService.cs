@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿namespace ShopApp.Services;
 
-namespace ShopApp.Services
-{
-    internal class IDatabaseRutaService
+public interface IDatabaseRutaService
     {
-    }
+    string get(string rutaArchivo);
 }
