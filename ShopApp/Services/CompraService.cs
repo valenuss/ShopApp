@@ -13,7 +13,7 @@ public class CompraService
         this.client = client;
     }
     public async Task<bool> EnviarData(
-        IEnumerable<CompraItem> compras)
+        IEnumerable<DataAcces.CompraItem> compras)
     {
         var uri = "http://10.0.2.2:8080/api/Compra";
 
