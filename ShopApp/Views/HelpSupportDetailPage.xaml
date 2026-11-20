@@ -6,7 +6,7 @@
              Title="HelpSupportDetailPage">
 
     <ContentPage.BindingContext>
-        <views:HelpSupportDetailData/>
+        <views:HelpSupportDetailPage/>
     </ContentPage.BindingContext>
 
     <Grid RowDefinitions="*,Auto,*">

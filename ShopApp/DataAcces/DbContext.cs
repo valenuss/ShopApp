@@ -53,5 +53,25 @@ namespace ShopApp.DataAcces
     }
 
     public record Client(int Id, string Nombre, string Direccion);
+    public record Compra(int ClienteId, int ProductId, int Cantidad)
+    {
+        private object? clienteId;
+        private object id;
+        private object cantidad;
+
+        public Compra(object? clienteId, object id, object cantidad)
+        {
+            this.clienteId = clienteId;
+            this.id = id;
+            this.cantidad = cantidad;
+        }
+    }
+
+    public record Product(int Id, string Nombre, string Descripcion, decimal Precio, int CategoryId, string Imagen)
+    {
+        public Category Category { get; set; }
+    }
+
+    public record Client(int Id, string Nombre, string Direccion);
     public record Compra(int ClienteId, int ProductId, int Cantidad);
 }

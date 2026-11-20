@@ -1,4 +1,5 @@
 ﻿using ShopApp.DataAcces;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace ShopApp.ViewModels;
 

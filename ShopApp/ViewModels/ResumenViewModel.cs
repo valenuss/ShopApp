@@ -1,4 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿
+using ShopApp.DataAcces;
+using CommunityToolkit.Mvvm.ComponentModel;
+using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace ShopApp.ViewModels;
 
@@ -13,8 +17,6 @@ public partial class ResumenViewModel : ViewModelGlobal
     [ObservableProperty]
     private int clients;
 
-    public object TotalProducts { get; }
-
     [ObservableProperty]
     private int totalProducts;
 
@@ -24,30 +26,17 @@ public partial class ResumenViewModel : ViewModelGlobal
             .AsNoTracking()
             .ToList();
 
-        Visitas = compras.Count;
+        visitas = compras.Count;
 
-        Total = compras.Sum(
-            static c => c.Cantidad * c.Precio);
+        total = compras.Sum(
+            c => c.Cantidad * c.Precio);
 
         clients = compras
             .Select(c => c.ClienteId)
             .Distinct()
             .Count();
 
-        TotalProducts = compras.Sum(
-            static c => c.Cantidad);
-    }
-
-    public int Visitas { get; }
-    public object Total { get; }
-}
-
-public class ShopOutDbContext
-{
-    public object Compras { get; internal set; }
-
-    internal async Task SaveChangesAsync()
-    {
-        throw new NotImplementedException();
+        totalProducts = compras.Sum(
+            c => c.Cantidad);
     }
 }
