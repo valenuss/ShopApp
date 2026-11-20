@@ -19,7 +19,7 @@ public partial class HelpSupportDetailPage
     public void ApplyQueryAttributes(
         IDictionary<string, object> query)
     {
-        _viewModel.ApplyQueryAttributes(query);
+        _viewModel.ApplyQueryAttributes(query, _viewModel.GetClienteId1());
 
         Title = $"Cliente: {_viewModel.ClienteId}";
     }

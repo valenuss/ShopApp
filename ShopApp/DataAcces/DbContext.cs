@@ -66,12 +66,4 @@ namespace ShopApp.DataAcces
             this.cantidad = cantidad;
         }
     }
-
-    public record Product(int Id, string Nombre, string Descripcion, decimal Precio, int CategoryId, string Imagen)
-    {
-        public Category Category { get; set; }
-    }
-
-    public record Client(int Id, string Nombre, string Direccion);
-    public record Compra(int ClienteId, int ProductId, int Cantidad);
 }

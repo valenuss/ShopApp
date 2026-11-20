@@ -30,6 +30,7 @@ public partial class HelpSupportDetailViewModel
     private readonly IConnectivity _connectivity;
 
     private readonly CompraService _compraService;
+    internal readonly object ClienteId;
 
     public HelpSupportDetailViewModel(
         ShopOutDbContext outDbContext,
@@ -42,22 +43,22 @@ public partial class HelpSupportDetailViewModel
 
         using var database = new ShopDbContext();
 
-        Products = new ObservableCollection<Product>(
+        products = new ObservableCollection<Product>(
             database.Products.ToList()
         );
 
         AddCommand = new MiComando(() =>
         {
-            if (ProductoSeleccionado == null)
+            if (productoSeleccionado == null)
                 return;
 
             var compra = new Compra(
                 ClienteId,
-                ProductoSeleccionado.Id,
-                Cantidad
+                productoSeleccionado.Id,
+                cantidad
             );
 
-            Compras.Add(compra);
+            compras.Add(compra);
         },
         () => true);
 
@@ -94,7 +95,7 @@ public partial class HelpSupportDetailViewModel
 
     private async Task EnviarCompra()
     {
-        if (Compras.Count == 0)
+        if (compras.Count == 0)
         {
             await Shell.Current.DisplayAlert(
                 "Aviso",
@@ -106,9 +107,9 @@ public partial class HelpSupportDetailViewModel
 
         var comprasParaEnviar = new List<CompraItem>();
 
-        foreach (var item in Compras)
+        foreach (var item in compras)
         {
-            var producto = Products.FirstOrDefault(
+            var producto = products.FirstOrDefault(
                 p => p.Id == item.ProductId);
 
             if (producto == null)
@@ -124,7 +125,7 @@ public partial class HelpSupportDetailViewModel
             comprasParaEnviar.Add(compraItem);
         }
 
-        if (comprasParaEnviar.Count != Compras.Count)
+        if (comprasParaEnviar.Count != compras.Count)
         {
             await Shell.Current.DisplayAlert(
                 "Error",
@@ -137,7 +138,7 @@ public partial class HelpSupportDetailViewModel
         try
         {
             var resultado = await _compraService
-                .EnviarData(comprasParaEnviar);
+                .EnviarData((IEnumerable<DataAcces.CompraItem>)comprasParaEnviar);
 
             if (resultado)
             {
@@ -168,13 +169,19 @@ public partial class HelpSupportDetailViewModel
                 "OK");
         }
     }
+
+    public object GetClienteId1()
+    {
+        return ClienteId;
+    }
+
     public void ApplyQueryAttributes(
-        IDictionary<string, object> query)
+        IDictionary<string, object> query, object clienteId1)
     {
         if (query.TryGetValue("id", out var valorId)
             && int.TryParse(valorId?.ToString(), out int id))
         {
-            ClienteId = id;
+            clienteId1 = id;
         }
     }
 }
