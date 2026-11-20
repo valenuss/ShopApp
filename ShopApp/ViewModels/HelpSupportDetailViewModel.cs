@@ -53,7 +53,7 @@ public partial class HelpSupportDetailViewModel
                 return;
 
             var compra = new Compra(
-                ClienteId,
+                (int)ClienteId,
                 productoSeleccionado.Id,
                 cantidad
             );
@@ -144,7 +144,7 @@ public partial class HelpSupportDetailViewModel
             {
 
                 _outDbContext.Compras.AddRange(
-                    comprasParaEnviar);
+                    (IEnumerable<DataAcces.CompraItem>)comprasParaEnviar);
 
                 await _outDbContext.SaveChangesAsync();
 
@@ -176,12 +176,17 @@ public partial class HelpSupportDetailViewModel
     }
 
     public void ApplyQueryAttributes(
-        IDictionary<string, object> query, object clienteId1)
+        IDictionary<string, object> query, object clienteId)
     {
         if (query.TryGetValue("id", out var valorId)
             && int.TryParse(valorId?.ToString(), out int id))
         {
-            clienteId1 = id;
+            clienteId = id;
         }
+    }
+
+    public void ApplyQueryAttributes(IDictionary<string, object> query)
+    {
+        throw new NotImplementedException();
     }
 }
